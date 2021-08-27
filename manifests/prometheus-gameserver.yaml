@@ -2,18 +2,18 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: coredns
-  name: coredns
+    k8s-app: gameserver
+  name: servicemonitor-custom
   namespace: monitoring
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-    interval: 15s
-    targetPort: 9153
+    interval: 30s
+    path: /metric
+    targetPort: 8080
   jobLabel: k8s-app
   namespaceSelector:
     matchNames:
-    - kube-system
+    - dev
   selector:
-    matchLabels:
-      k8s-app: kube-dns
+    matchLabels: {}
