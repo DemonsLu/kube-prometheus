@@ -79,6 +79,20 @@ local kp =
         },  // spec
       },  // prometheus
     },  // prometheus
+
+    grafanaDashboards+:: {  //  monitoring-mixin compatibility
+      'request-dashboard.json': (import 'mytry-grafana-dashboard.json'),
+    },
+    grafana+:: {
+      dashboards+:: {  // use this method to import your dashboards to Grafana
+        'request-dashboard.json': (import 'mytry-grafana-dashboard.json'),
+      },
+    },
+//    grafana+:: {
+//      rawDashboards+:: {
+//        'request-dashboard.json': (importstr 'mytry-grafana-dashboard.json'),
+//      },
+//    },
   };
 
 { ['setup/0namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) } +
