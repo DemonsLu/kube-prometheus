@@ -1,0 +1,36 @@
+# external alertmanager yaml
+global:
+  resolve_timeout: 10m
+  # The smarthost and SMTP sender used for mail notifications.
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'Casual AlertManager <casual_alertmanager@zentertain.net>'
+  smtp_auth_username: 'heroesleague_support@zentertain.net'
+  smtp_auth_password: 'OaMEnWEi'
+
+# The directory from which notification templates are read.
+templates:
+  - '/etc/alertmanager/template/*.tmpl'
+
+route:
+  group_by: ['severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  receiver: 'team-word-mails' # default receiver
+  routes:
+  - match:
+      alertname: PodRestart
+    receiver: 'team-word-mails'
+  - match:
+      alertname: NodeIncrease
+    receiver: 'team-word-mails'
+  - match:
+      alertname: PodIncrease
+    receiver: 'team-word-mails'
+receivers:
+  - name: 'team-all-mails'
+    email_configs:
+      - to: 'wei.zang@zenjoy.net, pai.deng@zenjoy.net, haibo.wang@zenjoy.net, boqiang.liu@zenjoy.net, hongyang.hua@zenjoy.net, lu.xu@zenjoy.net'
+  - name: 'team-word-mails'
+    email_configs:
+      - to: 'lu.xu@zenjoy.net, wei.zang@zenjoy.net'

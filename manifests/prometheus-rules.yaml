@@ -2227,3 +2227,28 @@ spec:
       for: 2m
       labels:
         severity: warning
+  - name: pod-restart.rules
+    rules:
+    - alert: PodRestart
+      annotations:
+        description: pod restart event detected.
+      expr: rate(kube_pod_container_status_restarts_total[5m]) > 0
+      labels:
+        severity: warning
+  - name: node-increase.rules
+    rules:
+    - alert: NodeIncrease
+      annotations:
+        description: node number increased event detected.
+      expr: (sum(kube_node_info) - sum(kube_node_info offset 5m)) > 0
+      labels:
+        severity: warning
+  - name: pod-increase.rules
+    rules:
+    - alert: PodIncrease
+      annotations:
+        description: pod number increased event detected.
+      expr: (sum(kube_pod_info) by (created_by_name)) - (sum(kube_pod_info offset
+        5m)  by (created_by_name)) > 0
+      labels:
+        severity: warning

@@ -16,6 +16,9 @@ local kp =
       prometheus+:: {
         namespaces: [],
       },
+      alertmanager+: {
+        config: importstr 'alertmanager-config.yaml',
+      },
     },
 
     prometheus+:: {
@@ -88,11 +91,56 @@ local kp =
         'request-dashboard.json': (import 'mytry-grafana-dashboard.json'),
       },
     },
-//    grafana+:: {
-//      rawDashboards+:: {
-//        'request-dashboard.json': (importstr 'mytry-grafana-dashboard.json'),
-//      },
-//    },
+    prometheusAlerts+:: {
+      groups+: [
+        {
+          name: 'pod-restart.rules',
+          rules: [
+            {
+              alert: 'PodRestart',
+              expr: 'rate(kube_pod_container_status_restarts_total[5m]) > 0',
+              labels: {
+                severity: 'warning',
+              },
+              annotations: {
+                description: 'pod restart event detected.',
+              },
+            },
+          ],
+        },
+        {
+          name: 'node-increase.rules',
+          rules: [
+            {
+              alert: 'NodeIncrease',
+              expr: '(sum(kube_node_info) - sum(kube_node_info offset 5m)) > 0',
+              labels: {
+                severity: 'warning',
+              },
+              annotations: {
+                description: 'node number increased event detected.',
+              },
+            },
+          ],
+        },
+        // 测试环境可以把这个rule去掉，因为测试环境pod更新比较频繁，总有新pod产生。会频繁误触发这条报警
+        {
+          name: 'pod-increase.rules',
+          rules: [
+            {
+              alert: 'PodIncrease',
+              expr: '(sum(kube_pod_info) by (created_by_name)) - (sum(kube_pod_info offset 5m)  by (created_by_name)) > 0',
+              labels: {
+                severity: 'warning',
+              },
+              annotations: {
+                description: 'pod number increased event detected.',
+              },
+            },
+          ],
+        },
+      ],
+    },
   };
 
 { ['setup/0namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) } +
