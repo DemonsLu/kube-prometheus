@@ -92,54 +92,63 @@ local kp =
       },
     },
     prometheusAlerts+:: {
-      groups+: [
-        {
-          name: 'pod-restart.rules',
-          rules: [
-            {
-              alert: 'PodRestart',
-              expr: 'rate(kube_pod_container_status_restarts_total[5m]) > 0',
-              labels: {
-                severity: 'warning',
-              },
-              annotations: {
-                description: 'pod restart event detected.',
-              },
-            },
-          ],
-        },
-        {
-          name: 'node-increase.rules',
-          rules: [
-            {
-              alert: 'NodeIncrease',
-              expr: '(sum(kube_node_info) - sum(kube_node_info offset 5m)) > 0',
-              labels: {
-                severity: 'warning',
-              },
-              annotations: {
-                description: 'node number increased event detected.',
-              },
-            },
-          ],
-        },
-        // 测试环境可以把这个rule去掉，因为测试环境pod更新比较频繁，总有新pod产生。会频繁误触发这条报警
-        {
-          name: 'pod-increase.rules',
-          rules: [
-            {
-              alert: 'PodIncrease',
-              expr: '(sum(kube_pod_info) by (created_by_name)) - (sum(kube_pod_info offset 5m)  by (created_by_name)) > 0',
-              labels: {
-                severity: 'warning',
-              },
-              annotations: {
-                description: 'pod number increased event detected.',
-              },
-            },
-          ],
-        },
-      ],
+      groups:
+        std.map(
+          function(ruleGroup)
+            // 过滤掉一些无用的默认rules
+            if ruleGroup.name == 'general.rules' then
+              ruleGroup { rules: std.filter(function(rule) !(rule.alert == 'TargetDown' || rule.alert == 'Watchdog'), ruleGroup.rules) }
+            else ruleGroup,
+          // 将默认的groups拼接上自定义的ruleGroups，形成新的array
+          std.setUnion(super.groups, [
+           {
+             name: 'pod-restart.rules',
+             rules: [
+               {
+                 alert: 'PodRestart',
+                 expr: 'rate(kube_pod_container_status_restarts_total[5m]) > 0',
+                 labels: {
+                   severity: 'warning',
+                 },
+                 annotations: {
+                   description: 'pod restart event detected.',
+                 },
+               },
+             ],
+           },
+           {
+             name: 'node-increase.rules',
+             rules: [
+               {
+                 alert: 'NodeIncrease',
+                 expr: '(sum(kube_node_info) - sum(kube_node_info offset 5m)) > 0',
+                 labels: {
+                   severity: 'warning',
+                 },
+                 annotations: {
+                   description: 'node number increased event detected.',
+                 },
+               },
+             ],
+           },
+           // 测试环境可以把这个rule去掉，因为测试环境pod更新比较频繁，总有新pod产生。会频繁误触发这条报警
+           {
+             name: 'pod-increase.rules',
+             rules: [
+               {
+                 alert: 'PodIncrease',
+                 expr: '(sum(kube_pod_info) by (created_by_name)) - (sum(kube_pod_info offset 5m)  by (created_by_name)) > 0',
+                 labels: {
+                   severity: 'warning',
+                 },
+                 annotations: {
+                   description: 'pod number increased event detected.',
+                 },
+               },
+             ],
+           },
+         ], keyF=function(ruleGroup) ruleGroup.name),
+        ),
     },
   };
 

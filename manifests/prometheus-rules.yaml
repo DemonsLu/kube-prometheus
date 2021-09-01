@@ -1164,6 +1164,31 @@ spec:
       for: 5m
       labels:
         severity: critical
+  - name: pod-restart.rules
+    rules:
+    - alert: PodRestart
+      annotations:
+        description: pod restart event detected.
+      expr: rate(kube_pod_container_status_restarts_total[5m]) > 0
+      labels:
+        severity: warning
+  - name: node-increase.rules
+    rules:
+    - alert: NodeIncrease
+      annotations:
+        description: node number increased event detected.
+      expr: (sum(kube_node_info) - sum(kube_node_info offset 5m)) > 0
+      labels:
+        severity: warning
+  - name: pod-increase.rules
+    rules:
+    - alert: PodIncrease
+      annotations:
+        description: pod number increased event detected.
+      expr: (sum(kube_pod_info) by (created_by_name)) - (sum(kube_pod_info offset
+        5m)  by (created_by_name)) > 0
+      labels:
+        severity: warning
   - name: prometheus-operator
     rules:
     - alert: PrometheusOperatorListErrors
@@ -2195,27 +2220,7 @@ spec:
       labels:
         severity: critical
   - name: general.rules
-    rules:
-    - alert: TargetDown
-      annotations:
-        message: '{{ printf "%.4g" $value }}% of the {{ $labels.job }}/{{ $labels.service
-          }} targets in {{ $labels.namespace }} namespace are down.'
-      expr: 100 * (count(up == 0) BY (job, namespace, service) / count(up) BY (job,
-        namespace, service)) > 10
-      for: 10m
-      labels:
-        severity: warning
-    - alert: Watchdog
-      annotations:
-        message: |
-          This is an alert meant to ensure that the entire alerting pipeline is functional.
-          This alert is always firing, therefore it should always be firing in Alertmanager
-          and always fire against a receiver. There are integrations with various notification
-          mechanisms that send a notification when this alert is not firing. For example the
-          "DeadMansSnitch" integration in PagerDuty.
-      expr: vector(1)
-      labels:
-        severity: none
+    rules: []
   - name: node-network
     rules:
     - alert: NodeNetworkInterfaceFlapping
@@ -2225,30 +2230,5 @@ spec:
       expr: |
         changes(node_network_up{job="node-exporter",device!~"veth.+"}[2m]) > 2
       for: 2m
-      labels:
-        severity: warning
-  - name: pod-restart.rules
-    rules:
-    - alert: PodRestart
-      annotations:
-        description: pod restart event detected.
-      expr: rate(kube_pod_container_status_restarts_total[5m]) > 0
-      labels:
-        severity: warning
-  - name: node-increase.rules
-    rules:
-    - alert: NodeIncrease
-      annotations:
-        description: node number increased event detected.
-      expr: (sum(kube_node_info) - sum(kube_node_info offset 5m)) > 0
-      labels:
-        severity: warning
-  - name: pod-increase.rules
-    rules:
-    - alert: PodIncrease
-      annotations:
-        description: pod number increased event detected.
-      expr: (sum(kube_pod_info) by (created_by_name)) - (sum(kube_pod_info offset
-        5m)  by (created_by_name)) > 0
       labels:
         severity: warning
