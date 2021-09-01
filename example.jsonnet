@@ -93,6 +93,7 @@ local kp =
     },
     prometheusAlerts+:: {
       groups:
+        // jsonnet std library link: https://jsonnet.org/ref/stdlib.html
         std.map(
           function(ruleGroup)
             // 过滤掉一些无用的默认rules
