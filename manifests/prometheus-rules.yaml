@@ -1168,7 +1168,7 @@ spec:
     rules:
     - alert: PodRestart
       annotations:
-        description: pod restart event detected.
+        description: pod restart {{ $value }} times event detected.
       expr: rate(kube_pod_container_status_restarts_total[5m]) > 0
       labels:
         severity: warning
@@ -1176,7 +1176,7 @@ spec:
     rules:
     - alert: NodeIncrease
       annotations:
-        description: node number increased event detected.
+        description: node number increased {{ $value }} event detected.
       expr: (sum(kube_node_info) - sum(kube_node_info offset 5m)) > 0
       labels:
         severity: warning
@@ -1184,7 +1184,7 @@ spec:
     rules:
     - alert: PodIncrease
       annotations:
-        description: pod number increased event detected.
+        description: pod number increased {{ $value }} event detected.
       expr: (sum(kube_pod_info) by (created_by_name)) - (sum(kube_pod_info offset
         5m)  by (created_by_name)) > 0
       labels:

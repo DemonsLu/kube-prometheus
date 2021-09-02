@@ -16,7 +16,7 @@ route:
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 3h
-  receiver: 'team-word-mails' # default receiver
+  receiver: 'null' # default receiver
   routes:
   - match:
       alertname: PodRestart
@@ -28,6 +28,7 @@ route:
       alertname: PodIncrease
     receiver: 'team-word-mails'
 receivers:
+  - name: 'null'
   - name: 'team-all-mails'
     email_configs:
       - to: 'wei.zang@zenjoy.net, pai.deng@zenjoy.net, haibo.wang@zenjoy.net, boqiang.liu@zenjoy.net, hongyang.hua@zenjoy.net, lu.xu@zenjoy.net'

@@ -88,6 +88,7 @@ local kp =
     },
     grafana+:: {
       dashboards+:: {  // use this method to import your dashboards to Grafana
+        // 这个import的内容实际上是自己在grafana上先戳戳点点建好UI后，直接导出成jsonModel的结果文件，所以不要怕这里面东西一大坨不知道是什么，其实不用管
         'request-dashboard.json': (import 'mytry-grafana-dashboard.json'),
       },
     },
@@ -112,7 +113,7 @@ local kp =
                    severity: 'warning',
                  },
                  annotations: {
-                   description: 'pod restart event detected.',
+                   description: 'pod restart {{ $value }} times event detected.',
                  },
                },
              ],
@@ -127,7 +128,7 @@ local kp =
                    severity: 'warning',
                  },
                  annotations: {
-                   description: 'node number increased event detected.',
+                   description: 'node number increased {{ $value }} event detected.',
                  },
                },
              ],
@@ -143,7 +144,7 @@ local kp =
                    severity: 'warning',
                  },
                  annotations: {
-                   description: 'pod number increased event detected.',
+                   description: 'pod number increased {{ $value }} event detected.',
                  },
                },
              ],
