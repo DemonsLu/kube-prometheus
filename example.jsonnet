@@ -37,7 +37,7 @@ local kp =
           endpoints: [
             {
               targetPort: 8080,
-              path: "/metric",
+              path: "/metrics",
               interval: "30s",    // 每30s抓取一次信息
               bearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token",
             },

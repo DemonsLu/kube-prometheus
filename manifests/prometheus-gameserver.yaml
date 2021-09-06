@@ -9,7 +9,7 @@ spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     interval: 30s
-    path: /metric
+    path: /metrics
     targetPort: 8080
   jobLabel: k8s-app
   namespaceSelector:
