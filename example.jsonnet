@@ -108,12 +108,13 @@ local kp =
              rules: [
                {
                  alert: 'PodRestart',
-                 expr: 'rate(kube_pod_container_status_restarts_total[5m]) > 0',
+                 expr: 'sum(increase(kube_pod_container_status_restarts_total{}[5m])) by (pod, namespace) > 0',
                  labels: {
                    severity: 'warning',
                  },
                  annotations: {
-                   description: 'pod restart {{ $value }} times event detected.',
+                   description: 'pod restart {{ $value }} times event detected. namespace is {{ $labels.namespace }}
+                    pod is {{ $labels.pod }}.',
                  },
                },
              ],
@@ -144,7 +145,7 @@ local kp =
                    severity: 'warning',
                  },
                  annotations: {
-                   description: 'pod number increased {{ $value }} event detected.',
+                   description: 'pod number increased {{ $value }} event detected. repliaSet is {{ $labels.created_by_name }}',
                  },
                },
              ],

@@ -1168,8 +1168,11 @@ spec:
     rules:
     - alert: PodRestart
       annotations:
-        description: pod restart {{ $value }} times event detected.
-      expr: rate(kube_pod_container_status_restarts_total[5m]) > 0
+        description: |-
+          pod restart {{ $value }} times event detected. namespace is {{ $labels.namespace }}
+                              pod is {{ $labels.pod }}.
+      expr: sum(increase(kube_pod_container_status_restarts_total{}[5m])) by (pod,
+        namespace) > 0
       labels:
         severity: warning
   - name: node-increase.rules
@@ -1184,7 +1187,8 @@ spec:
     rules:
     - alert: PodIncrease
       annotations:
-        description: pod number increased {{ $value }} event detected.
+        description: pod number increased {{ $value }} event detected. repliaSet is
+          {{ $labels.created_by_name }}
       expr: (sum(kube_pod_info) by (created_by_name)) - (sum(kube_pod_info offset
         5m)  by (created_by_name)) > 0
       labels:
