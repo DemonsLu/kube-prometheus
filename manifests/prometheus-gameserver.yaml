@@ -10,10 +10,13 @@ spec:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     interval: 30s
     path: /metrics
-    targetPort: 8080
+    port: http
   jobLabel: k8s-app
   namespaceSelector:
     matchNames:
     - dev
+    - alpha
+    - beta
+    - prod
   selector:
     matchLabels: {}

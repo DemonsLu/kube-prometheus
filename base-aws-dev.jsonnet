@@ -46,7 +46,7 @@ local kp =
             matchLabels: {},
           },
           namespaceSelector: {
-              matchNames: ['dev'],
+              matchNames: ['dev', 'alpha', 'beta', 'prod'],
           },
         },
       },
