@@ -31129,7 +31129,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "(sum(http_request_total{namespace=\"dev\"}) by (method, host, path)) - (sum(http_request_total{namespace=\"dev\"} offset 5m) by (method, host, path))",
+                          "expr": "(sum(http_request_total{namespace=~\"dev|alpha|beta|prod\"}) by (method, host, path)) - (sum(http_request_total{namespace=~\"dev|alpha|beta|prod\"} offset 5m) by (method, host, path))",
                           "format": "time_series",
                           "instant": false,
                           "interval": "1m",
