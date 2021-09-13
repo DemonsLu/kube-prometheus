@@ -84,12 +84,12 @@ local kp =
     },  // prometheus
 
     grafanaDashboards+:: {  //  monitoring-mixin compatibility
-      'request-dashboard.json': (import 'mytry-grafana-dashboard.json'),
+      'request-dashboard.json': (import 'grafana-dashboard-full.json'),
     },
     grafana+:: {
       dashboards+:: {  // use this method to import your dashboards to Grafana
         // 这个import的内容实际上是自己在grafana上先戳戳点点建好UI后，直接导出成jsonModel的结果文件，所以不要怕这里面东西一大坨不知道是什么，其实不用管
-        'request-dashboard.json': (import 'mytry-grafana-dashboard.json'),
+      'request-dashboard.json': (import 'grafana-dashboard-full.json'),
       },
     },
     prometheusAlerts+:: {
